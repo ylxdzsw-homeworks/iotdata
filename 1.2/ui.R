@@ -2,10 +2,10 @@ library(shiny)
 
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
-  
+
   # Application title
-  titlePanel("HomeWrok 1.2"),
-  
+  titlePanel("HomeWrok 1.2 - 1133730117 张实唯"),
+
   tabsetPanel(
     tabPanel("Forest Fire", tableOutput('forestfires')),
     tabPanel("ENB2012", tableOutput('ENB2012')),
