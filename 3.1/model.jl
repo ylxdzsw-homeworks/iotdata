@@ -44,7 +44,6 @@ function fit!(model::McCullochPittsClassifier, X::Matrix{Float64}, y::Vector{Int
         L = X[F, :]
         L = y[F]' * L
         w += η * L[:]
-        η -= 0.01
     end
     model.boundary = w
     model

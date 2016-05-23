@@ -4,3 +4,10 @@ dist(x::AbstractVector{Float64}, y::AbstractVector{Float64}) = (x .- y) .^ 2 |> 
 
 car(x::Tuple) = x[1]
 cdr(x::Tuple) = x[2]
+
+rebalance(df_train, y) = begin
+    p = find(y.==1)
+    diff = length(y) - 2length(p)
+    s = sample(p, diff)
+    [df_train; df_train[s, :]]
+end
