@@ -20,6 +20,12 @@ preds = pred(model, df_test[:,1:end-1])
 roc(preds, df_test[end], "McCulloch-Pitts Classifier (unbalanced)")
 auc(preds, df_test[end])
 
+model = MultilayerPerceptronClassifier(22, 5, 1)
+model = fit!(model, df_train[:,1:end-1], df_train[end])
+preds = pred(model, df_test[:,1:end-1])
+roc(preds, df_test[end], "Multilayer Perceptron Classifier (unbalanced)")
+auc(preds, df_test[end])
+
 df_train = rebalance(df_train, df_train[end])
 
 model = NearestCenterClassifier()

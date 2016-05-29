@@ -2,7 +2,7 @@ import StatsBase.fit!
 
 #==== base type ====#
 abstract Classifier
-fit!(model::Classifier, X::DataFrame, y::AbstractVector) = fit!(model, Matrix(X), Vector(y))
+fit!(model::Classifier, X::DataFrame, y::AbstractVector; kwargs...) = fit!(model, Matrix(X), Vector(y); kwargs...)
 pred(model::Classifier, X::DataFrame) = pred(model, Matrix(X))
 
 abstract BinaryClassifier <: Classifier
@@ -70,7 +70,7 @@ function fit!(model::MultilayerPerceptronClassifier, X::Matrix{Float64}, y::Vect
     u = Vector{Matrix}(nlayers)
     w = map(1:nlayers-1) do x rand(layers[x+1], layers[x]+1) - .5 end
     δ = Vector{Matrix}(nlayers)
-    y[y .== -1] = 0
+    y = map(y) do x x==1 ? 1 : 0 end
     intercept = ones(n, 1)
     x[1] = [intercept X]
 
@@ -83,7 +83,7 @@ function fit!(model::MultilayerPerceptronClassifier, X::Matrix{Float64}, y::Vect
         end
 
         # 反向传播
-        δ[nlayers] = x[nlayers][:, [2]] - y
+        δ[nlayers] = (x[nlayers][:, [2]] - y) .* map(sigmoid_gradient, u[nlayers])
         for i in nlayers-1:-1:2
             δ[i] = (δ[i+1] * w[i][:, 2:end]) .* map(sigmoid_gradient, u[i])
             w[i] -= μ * δ[i+1]' * x[i] / n
@@ -96,5 +96,14 @@ function fit!(model::MultilayerPerceptronClassifier, X::Matrix{Float64}, y::Vect
 end
 
 function pred(model::MultilayerPerceptronClassifier, X::Matrix{Float64})
-
+    layers, w = model.layers, model.w
+    n, nlayers = size(X, 1), length(layers)
+    x, u = Vector{Matrix}(nlayers), Vector{Matrix}(nlayers)
+    intercept = ones(n, 1)
+    x[1] = [intercept X]
+    for i in 2:nlayers
+        u[i] = x[i-1] * w[i-1]'
+        x[i] = [intercept map(sigmoid, u[i])]
+    end
+    x[nlayers][:, 2]
 end
