@@ -1,6 +1,5 @@
 using DataFrames
 using Gadfly
-using ProgressMeter
 
 include("util.jl")
 include("model.jl")

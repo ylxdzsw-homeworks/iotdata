@@ -61,30 +61,38 @@ type MultilayerPerceptronClassifier <: BinaryClassifier
     MultilayerPerceptronClassifier(x...) = new(collect(x))
 end
 
-function fit!(model::MultilayerPerceptronClassifier, X::Matrix{Float64}, y::Vector{Int}; nrounds::Int=100, μ::Float64=1.)
+function fit!(model::MultilayerPerceptronClassifier, X::Matrix{Float64}, y::Vector{Int};
+              nrounds::Int=100, μ::Float64=1., λ::Float64=1.)
     layers = model.layers
     nlayers = length(layers)
-    intercept = ones(size(X, 1), 1)
+    n = size(X, 1)
     x = Vector{Matrix}(nlayers)
     u = Vector{Matrix}(nlayers)
     w = map(1:nlayers-1) do x rand(layers[x+1], layers[x]+1) - .5 end
     δ = Vector{Matrix}(nlayers)
-    grad = Vector{Matrix}(nlayers-1)
     y[y .== -1] = 0
+    intercept = ones(n, 1)
     x[1] = [intercept X]
 
-    @showprogress 1 "trainning: " for nround in 1:nrounds
+    for nround in 1:nrounds
+        μ -= μ / nrounds
+
         for i in 2:nlayers
             u[i] = x[i-1] * w[i-1]'
             x[i] = [intercept map(sigmoid, u[i])]
         end
 
+        # 反向传播
         δ[nlayers] = x[nlayers][:, [2]] - y
-        for i in nlayers-1:2
+        for i in nlayers-1:-1:2
             δ[i] = (δ[i+1] * w[i][:, 2:end]) .* map(sigmoid_gradient, u[i])
-            w[i] += μ * δ[i+1]' * x[i]
+            w[i] -= μ * δ[i+1]' * x[i] / n
         end
+        w[1] -= μ * δ[2]' * x[1] / n
     end
+
+    model.w = w
+    model
 end
 
 function pred(model::MultilayerPerceptronClassifier, X::Matrix{Float64})
