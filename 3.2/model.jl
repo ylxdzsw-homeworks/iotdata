@@ -74,7 +74,7 @@ function fit!(model::MultilayerPerceptronClassifier, X::Matrix{Float64}, y::Vect
     intercept = ones(n, 1)
     x[1] = [intercept X]
 
-    for nround in 1:nrounds
+    @showprogress 1 "trainning..." for nround in 1:nrounds
         μ -= μ / nrounds
 
         for i in 2:nlayers
@@ -105,5 +105,5 @@ function pred(model::MultilayerPerceptronClassifier, X::Matrix{Float64})
         u[i] = x[i-1] * w[i-1]'
         x[i] = [intercept map(sigmoid, u[i])]
     end
-    x[nlayers][:, 2]
+    u[nlayers][:]
 end
