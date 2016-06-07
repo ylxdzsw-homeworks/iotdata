@@ -39,7 +39,7 @@ module HIT
         ("二公寓"   , "校医院"   , 112)
     ]
 
-    const direct_distance = [
+    const direct_distances = [
         ("3G体验店" , 178),
         ("美食长廊" , 144),
         ("校医院"   , 247),
