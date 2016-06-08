@@ -7,6 +7,8 @@ type Node{T}
     Node(x::AbstractString, d::Int) = new(x, Dict{Node, Int}(), d, Nullable{T}())
 end
 
+name(x::Node) = x.name
+
 immutable Graph{T}
     nodes::Vector{Node{T}}
 end

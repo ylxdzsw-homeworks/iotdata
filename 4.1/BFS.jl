@@ -20,7 +20,7 @@ function BFS!(G::Graph{Node}, departure::Node{Node}, destination::Node{Node})
     error("unreachable")
 end
 
-BFS!(G::Module, departure::AbstractString, destination::AbstractString) = let
+function BFS(G::Module, departure::AbstractString, destination::AbstractString)
     G           = gengraph(G, Node)
     departure   = findnode(G, departure)
     destination = findnode(G, destination)
