@@ -1,0 +1,6 @@
+data
+xgboost/graphs
+xgboost/*
+!xgboost/*.jl
+!xgboost/*.jlt
+!xgboost/*.conf

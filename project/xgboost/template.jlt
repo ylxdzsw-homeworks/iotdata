@@ -1,0 +1,4 @@
+$$ for i in 1:350 $$
+<h2> booster$i </h2>
+<img src="$i.svg" style="width: 100%"/>
+$$ end $$
